@@ -109,7 +109,9 @@ function expressionCalculator(expr) {
     for (let i = 0; i < exprArr.length; i++) {
         if (openBracket === 1 && closeBracket === 1) {
             bracketArr = exprArr.slice(openBracketIndex + 1, closeBracketIndex);
-            bracketArrResult = performSingleOperation(bracketArr);
+            while (bracketArr.includes('*') || bracketArr.includes('/') || bracketArr.includes('+') || bracketArr.includes('-')) {
+                bracketArrResult = performSingleOperation(bracketArr);
+            }
             exprArr.splice(openBracketIndex, closeBracketIndex - openBracketIndex + 1, bracketArrResult);
         } else if (exprArr[i] === '(') {
             openBracket = 1;
