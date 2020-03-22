@@ -6,11 +6,19 @@ function eval() {
 function expressionCalculator(expr) {
     let operations = ['*', '/', '+', '-'];
     let operation,
-      operationIndex,
-      argumentLeft,
-      argumentRight,
-      operationResult,
-      match;
+    operationIndex,
+    argumentLeft,
+    argumentRight,
+    operationResult,
+    match,
+    openBracket,
+    closeBracket,
+    amountOfOpenBrackets = 0,
+    amountOfCloseBrackets = 0,
+    openBracketIndex,
+    closeBracketIndex,
+    bracketArr,
+    bracketArrResult;
     let exprArr = expr.split('');
     for (let i = 0; i < exprArr.length; i++) {
       if (exprArr[i] === ' ') {
@@ -26,7 +34,7 @@ function expressionCalculator(expr) {
         i--;
       }
     }
-    function performSingleOperation() {
+    function performSingleOperation(exprArr) {
       match = 0;
       argumentLeft = 0;
       argumentLeft = 0;
@@ -96,9 +104,28 @@ function expressionCalculator(expr) {
         default:
           break;
       }
+      return exprArr[0];
     }
+    for (let i = 0; i < exprArr.length; i++) {
+        if (openBracket === 1 && closeBracket === 1) {
+            bracketArr = exprArr.slice(openBracketIndex + 1, closeBracketIndex);
+            bracketArrResult = performSingleOperation(bracketArr);
+            exprArr.splice(openBracketIndex, closeBracketIndex - openBracketIndex + 1, bracketArrResult);
+        } else if (exprArr[i] === '(') {
+            openBracket = 1;
+            openBracketIndex = i;
+            amountOfOpenBrackets += 1; 
+            closeBracket = 0;
+
+        } else if (exprArr[i] === ')') {
+            closeBracket = 1;
+            closeBracketIndex = i;
+            amountOfCloseBrackets += 1;
+        } 
+    }
+    if (amountOfOpenBrackets !== amountOfCloseBrackets) throw 'ExpressionError: Brackets must be paired';
     while (exprArr.includes('*') || exprArr.includes('/') || exprArr.includes('+') || exprArr.includes('-')) {
-        performSingleOperation();
+        performSingleOperation(exprArr);
     }
     return exprArr[0];
   }
